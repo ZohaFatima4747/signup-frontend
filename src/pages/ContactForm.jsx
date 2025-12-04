@@ -1,15 +1,16 @@
+my contactform.jsx file 
+
 import React, { useState } from "react";
 import "../App.css";
 
-const BASE_URL = "https://signup-backend-ten.vercel.app/api/v1/contact";
 
-// 🔥 Refresh Token
+// 🔥 Function to refresh access token
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`${BASE_URL}/refresh`, {
+    const response = await fetch(`http://localhost:1000/api/v1/contact/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
@@ -28,6 +29,8 @@ const refreshAccessToken = async () => {
   }
 };
 
+
+
 const ContactForm = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
@@ -39,11 +42,10 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      let url = isSignUp
-        ? `${BASE_URL}`                 // SIGNUP
-        : `${BASE_URL}/login`;          // LOGIN
+      let url = isSignUp 
+        ? `http://localhost:1000/api/v1/contact` // signup endpoint
+        : `http://localhost:1000/api/v1/contact/login`; // login endpoint
 
       const response = await fetch(url, {
         method: "POST",
@@ -52,19 +54,22 @@ const ContactForm = () => {
       });
 
       const data = await response.json();
+
       setResponseMsg(data.message || "Success!");
       setFormData({ name: "", email: "", password: "" });
 
+      // ✅ If backend returns token, save it and redirect
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
 
-        const decoded = JSON.parse(atob(data.token.split(".")[1]));
+        // decode JWT to get user role
+        const decoded = JSON.parse(atob(data.token.split('.')[1]));
 
         if (decoded.role === "admin") {
-          window.location.href = "/admin";
+          window.location.href = "/admin"; // admin dashboard
         } else {
-          window.location.href = "/home";
+          window.location.href = "/home"; // normal user home page
         }
       }
 
@@ -124,7 +129,7 @@ const ContactForm = () => {
           </button>
         </form>
 
-        {responseMsg && <p className="response-msg" style={{ color: "green" }}>{responseMsg}</p>}
+        {responseMsg && <p className="response-msg" style={{color:"green"}}>{responseMsg}</p>}
 
         <p
           className="toggle-text"
