@@ -8,7 +8,7 @@ const refreshAccessToken = async () => {
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`http://localhost:1000/api/v1/contact/refresh`, {
+    const response = await fetch(`https://signup-backend-ten.vercel.app/api/v1/contact/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
@@ -42,8 +42,8 @@ const ContactForm = () => {
     e.preventDefault();
     try {
       let url = isSignUp 
-        ? `http://localhost:1000/api/v1/contact` // signup endpoint
-        : `http://localhost:1000/api/v1/contact/login`; // login endpoint
+        ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
+        : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
 
       const response = await fetch(url, {
         method: "POST",

@@ -8,7 +8,7 @@ const AdminPage = () => {
     if (!refreshToken) return null;
 
     try {
-      const response = await fetch(`http://localhost:1000/api/v1/contact/refresh`, {
+      const response = await fetch(`https://signup-backend-ten.vercel.app/api/v1/contact/refresh`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
@@ -37,7 +37,7 @@ const AdminPage = () => {
         if (!token) return; // still null → user must login again
       }
 
-      const res = await fetch(`http://localhost:1000/api/v1/contact/all`, {
+      const res = await fetch(`https://signup-backend-ten.vercel.app/api/v1/contact/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +49,7 @@ const AdminPage = () => {
         if (!token) return;
 
         // Retry request
-        const retry = await fetch(`http://localhost:1000/api/v1/contact/all`, {
+        const retry = await fetch(`https://signup-backend-ten.vercel.app/api/v1/contact/all`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
