@@ -7,11 +7,14 @@ const refreshAccessToken = async () => {
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`https://signup-backend-ten.vercel.app/api/v1/contact/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    });
+    const response = await fetch(
+      `https://signup-backend-ten.vercel.app/api/v1/contact/refresh`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      }
+    );
 
     const data = await response.json();
     if (data.token) {
@@ -27,7 +30,11 @@ const refreshAccessToken = async () => {
 
 const ContactForm = () => {
   const [isSignUp, setIsSignUp] = useState(true); // normal toggle for signup/login
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [responseMsg, setResponseMsg] = useState("");
   const [adminLogin, setAdminLogin] = useState(false); // track admin login mode
 
@@ -38,9 +45,10 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = isSignUp && !adminLogin
-        ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
-        : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
+      let url =
+        isSignUp && !adminLogin
+          ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
+          : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
 
       const response = await fetch(url, {
         method: "POST",
@@ -57,7 +65,7 @@ const ContactForm = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
 
-        const decoded = JSON.parse(atob(data.token.split('.')[1]));
+        const decoded = JSON.parse(atob(data.token.split(".")[1]));
         if (decoded.role === "admin") {
           window.location.href = "/admin";
         } else {
@@ -79,7 +87,10 @@ const ContactForm = () => {
   };
 
   return (
-    <div className={`login-container ${isSignUp ? "sign-up-mode" : ""}`} style={{ position: "relative" }}>
+    <div
+      className={`login-container ${isSignUp ? "sign-up-mode" : ""}`}
+      style={{ position: "relative" }}
+    >
       {/* Admin button top-right */}
       {!adminLogin && (
         <button
@@ -101,18 +112,29 @@ const ContactForm = () => {
       )}
 
       <div className="login-box">
-        <h2 style={{ color: "white" }}>{isSignUp && !adminLogin ? "Sign Up" : "Login"}</h2>
+        <h2 style={{ color: "white" }}>
+          {isSignUp && !adminLogin ? "Sign Up" : "Login"}
+        </h2>
 
         {/* Back arrow for Admin Login */}
         {adminLogin && (
           <p
             onClick={() => {
               setAdminLogin(false); // exit admin login
-              setIsSignUp(true);    // show signup form
+              setIsSignUp(true); // show signup form
             }}
-            style={{ cursor: "pointer", color: "yellowgreen", marginBottom: "10px" }}
+            style={{
+              cursor: "pointer",
+              color: "yellowgreen",
+              marginBottom: "10px",
+            }}
           >
             ← Back to Sign Up
+          </p>
+        )}
+        {adminLogin && (
+          <p style={{ color: "#ffeb3b", marginBottom: "10px" }}>
+            Admin login only. Enter your credentials.
           </p>
         )}
 
@@ -160,7 +182,11 @@ const ContactForm = () => {
           </button>
         </form>
 
-        {responseMsg && <p className="response-msg" style={{ color: "green" }}>{responseMsg}</p>}
+        {responseMsg && (
+          <p className="response-msg" style={{ color: "green" }}>
+            {responseMsg}
+          </p>
+        )}
 
         {/* Toggle text only if NOT admin login */}
         {!adminLogin && (
