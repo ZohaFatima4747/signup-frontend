@@ -39,43 +39,11 @@ const ContactForm = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    if (isSignUp) {
-      // ✅ Signup to Bubble DB
-      const bubbleResponse = await fetch(
-        "https://mern-app.bubbleapps.io/version-test/api/1.1/obj/User",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer c0e5c9d0e302228d79df4a0e1b6c8114", 
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            role: formData.role
-          }),
-        }
-      );
-
-      const data = await bubbleResponse.json();
-
-      if (bubbleResponse.ok) {
-        setResponseMsg("Signup successful!");
-        setFormData({ name: "", email: "", role: "" });
-        setTimeout(() => setResponseMsg(""), 3000);
-
-        // Redirect after signup
-        window.location.href = "/home";
-      } else {
-        setResponseMsg(data.message || "Signup failed");
-        setTimeout(() => setResponseMsg(""), 3000);
-      }
-    } else {
-      // 🔹 Login (keep your existing backend login)
-      let url = `https://signup-backend-ten.vercel.app/api/v1/contact/login`;
+    e.preventDefault();
+    try {
+      let url = isSignUp 
+        ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
+        : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
 
       const response = await fetch(url, {
         method: "POST",
@@ -88,27 +56,27 @@ const ContactForm = () => {
       setResponseMsg(data.message || "Success!");
       setFormData({ name: "", email: "", password: "" });
 
+      // ✅ If backend returns token, save it and redirect
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
 
-        const decoded = JSON.parse(atob(data.token.split(".")[1]));
+        // decode JWT to get user role
+        const decoded = JSON.parse(atob(data.token.split('.')[1]));
 
         if (decoded.role === "admin") {
-          window.location.href = "/admin";
+          window.location.href = "/admin"; // admin dashboard
         } else {
-          window.location.href = "/home";
+          window.location.href = "/home"; // normal user home page
         }
       }
 
       setTimeout(() => setResponseMsg(""), 3000);
+    } catch (error) {
+      setResponseMsg("Server error: " + error.message);
+      setTimeout(() => setResponseMsg(""), 3000);
     }
-  } catch (error) {
-    setResponseMsg("Server error: " + error.message);
-    setTimeout(() => setResponseMsg(""), 3000);
-  }
-};
-
+  };
 
   return (
     <div className={`login-container ${isSignUp ? "sign-up-mode" : ""}`}>
