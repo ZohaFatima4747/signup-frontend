@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../App.css";
 
-
 // 🔥 Function to refresh access token
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
@@ -15,7 +14,6 @@ const refreshAccessToken = async () => {
     });
 
     const data = await response.json();
-
     if (data.token) {
       localStorage.setItem("token", data.token);
       return data.token;
@@ -27,12 +25,11 @@ const refreshAccessToken = async () => {
   }
 };
 
-
-
 const ContactForm = () => {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(true); // normal toggle for signup/login
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [responseMsg, setResponseMsg] = useState("");
+  const [adminLogin, setAdminLogin] = useState(false); // track admin login mode
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,7 +38,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = isSignUp 
+      let url = isSignUp && !adminLogin
         ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
         : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
 
@@ -56,18 +53,15 @@ const ContactForm = () => {
       setResponseMsg(data.message || "Success!");
       setFormData({ name: "", email: "", password: "" });
 
-      // ✅ If backend returns token, save it and redirect
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
 
-        // decode JWT to get user role
         const decoded = JSON.parse(atob(data.token.split('.')[1]));
-
         if (decoded.role === "admin") {
-          window.location.href = "/admin"; // admin dashboard
+          window.location.href = "/admin";
         } else {
-          window.location.href = "/home"; // normal user home page
+          window.location.href = "/home";
         }
       }
 
@@ -78,13 +72,37 @@ const ContactForm = () => {
     }
   };
 
+  // Admin button click
+  const handleAdminClick = () => {
+    setIsSignUp(false); // force login view
+    setAdminLogin(true); // hide signup toggle
+  };
+
   return (
-    <div className={`login-container ${isSignUp ? "sign-up-mode" : ""}`}>
+    <div className={`login-container ${isSignUp ? "sign-up-mode" : ""}`} style={{ position: "relative" }}>
+      {/* Admin button top-right */}
+      <button
+        onClick={handleAdminClick}
+        style={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          padding: "10px 15px",
+          backgroundColor: "#4caf50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Admin
+      </button>
+
       <div className="login-box">
-        <h2 style={{ color: "white" }}>{isSignUp ? "Sign Up" : "Login"}</h2>
+        <h2 style={{ color: "white" }}>{isSignUp && !adminLogin ? "Sign Up" : "Login"}</h2>
 
         <form onSubmit={handleSubmit}>
-          {isSignUp && (
+          {isSignUp && !adminLogin && (
             <div className="input-group">
               <label>Name</label>
               <input
@@ -123,21 +141,24 @@ const ContactForm = () => {
           </div>
 
           <button type="submit" className="login-btn">
-            {isSignUp ? "Sign Up" : "Login"}
+            {isSignUp && !adminLogin ? "Sign Up" : "Login"}
           </button>
         </form>
 
-        {responseMsg && <p className="response-msg" style={{color:"green"}}>{responseMsg}</p>}
+        {responseMsg && <p className="response-msg" style={{ color: "green" }}>{responseMsg}</p>}
 
-        <p
-          className="toggle-text"
-          onClick={() => setIsSignUp(!isSignUp)}
-          style={{ cursor: "pointer" }}
-        >
-          {isSignUp
-            ? "Already have an account? Login"
-            : "Don't have an account? Sign Up"}
-        </p>
+        {/* Toggle text only if NOT admin login */}
+        {!adminLogin && (
+          <p
+            className="toggle-text"
+            onClick={() => setIsSignUp(!isSignUp)}
+            style={{ cursor: "pointer" }}
+          >
+            {isSignUp
+              ? "Already have an account? Login"
+              : "Don't have an account? Sign Up"}
+          </p>
+        )}
       </div>
     </div>
   );
