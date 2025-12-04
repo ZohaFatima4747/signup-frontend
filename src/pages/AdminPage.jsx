@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 
+const BASE_URL = "https://YOUR_BACKEND_URL.vercel.app"; 
+// 👆 apna backend URL yaha lagana
+
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
 
   const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken"); // backend must return this
+    const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) return null;
 
     try {
-      const response = await fetch(`http://localhost:1000/api/v1/contact/refresh`, {
+      const response = await fetch(`${BASE_URL}/api/v1/contact/refresh`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
@@ -17,7 +20,7 @@ const AdminPage = () => {
       const data = await response.json();
 
       if (data.token) {
-        localStorage.setItem("token", data.token); // update new access token
+        localStorage.setItem("token", data.token); // new access token save
         return data.token;
       }
 
@@ -31,25 +34,23 @@ const AdminPage = () => {
     try {
       let token = localStorage.getItem("token");
 
-      // ⚠️ If expired OR missing → try refresh
       if (!token) {
         token = await refreshAccessToken();
-        if (!token) return; // still null → user must login again
+        if (!token) return;
       }
 
-      const res = await fetch(`http://localhost:1000/api/v1/contact/all`, {
+      const res = await fetch(`${BASE_URL}/api/v1/contact/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // If token expired (401) → refresh again
+      // if token expired
       if (res.status === 401) {
         token = await refreshAccessToken();
         if (!token) return;
 
-        // Retry request
-        const retry = await fetch(`http://localhost:1000/api/v1/contact/all`, {
+        const retry = await fetch(`${BASE_URL}/api/v1/contact/all`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,6 +66,7 @@ const AdminPage = () => {
       if (Array.isArray(data)) setUsers(data);
       else if (data.users && Array.isArray(data.users)) setUsers(data.users);
       else setUsers([]);
+
     } catch (error) {
       console.log("Error fetching users:", error);
     }
