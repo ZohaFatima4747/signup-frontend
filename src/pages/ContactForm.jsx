@@ -29,12 +29,8 @@ const refreshAccessToken = async () => {
 };
 
 const ContactForm = () => {
-  const [isSignUp, setIsSignUp] = useState(true); // normal toggle for signup/login
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [isSignUp, setIsSignUp] = useState(true); // toggle signup/login
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [responseMsg, setResponseMsg] = useState("");
   const [adminLogin, setAdminLogin] = useState(false); // track admin login mode
 
@@ -45,7 +41,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url =
+      const url =
         isSignUp && !adminLogin
           ? `https://signup-backend-ten.vercel.app/api/v1/contact` // signup endpoint
           : `https://signup-backend-ten.vercel.app/api/v1/contact/login`; // login endpoint
@@ -66,6 +62,13 @@ const ContactForm = () => {
         localStorage.setItem("refreshToken", data.refreshToken);
 
         const decoded = JSON.parse(atob(data.token.split(".")[1]));
+
+        // Block non-admins from admin login
+        if (adminLogin && decoded.role !== "admin") {
+          setResponseMsg("Access denied: Not an admin account.");
+          return;
+        }
+
         if (decoded.role === "admin") {
           window.location.href = "/admin";
         } else {
@@ -80,10 +83,9 @@ const ContactForm = () => {
     }
   };
 
-  // Admin button click
   const handleAdminClick = () => {
     setIsSignUp(false); // force login view
-    setAdminLogin(true); // hide signup toggle
+    setAdminLogin(true); // enable admin login mode
   };
 
   return (
@@ -132,6 +134,8 @@ const ContactForm = () => {
             ← Back to Sign Up
           </p>
         )}
+
+        {/* Admin-only message */}
         {adminLogin && (
           <p style={{ color: "#ffeb3b", marginBottom: "10px" }}>
             Admin login only. Enter your credentials.
