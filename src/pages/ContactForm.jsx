@@ -30,7 +30,11 @@ const refreshAccessToken = async () => {
 
 const ContactForm = () => {
   const [isSignUp, setIsSignUp] = useState(true); // toggle signup/login
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [responseMsg, setResponseMsg] = useState("");
   const [adminLogin, setAdminLogin] = useState(false); // track admin login mode
 
@@ -66,7 +70,8 @@ const ContactForm = () => {
         // Block non-admins from admin login
         if (adminLogin && decoded.role !== "admin") {
           setResponseMsg("Access denied: Not an admin account.");
-          return;
+          setTimeout(() => setResponseMsg(""), 3000); // hide after 3 seconds
+          return; // stop further execution
         }
 
         if (decoded.role === "admin") {
