@@ -81,25 +81,40 @@ const ContactForm = () => {
   return (
     <div className={`login-container ${isSignUp ? "sign-up-mode" : ""}`} style={{ position: "relative" }}>
       {/* Admin button top-right */}
-      <button
-        onClick={handleAdminClick}
-        style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          padding: "10px 15px",
-          backgroundColor: "#4caf50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Admin
-      </button>
+      {!adminLogin && (
+        <button
+          onClick={handleAdminClick}
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            padding: "10px 15px",
+            backgroundColor: "#4caf50",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Admin
+        </button>
+      )}
 
       <div className="login-box">
         <h2 style={{ color: "white" }}>{isSignUp && !adminLogin ? "Sign Up" : "Login"}</h2>
+
+        {/* Back arrow for Admin Login */}
+        {adminLogin && (
+          <p
+            onClick={() => {
+              setAdminLogin(false); // exit admin login
+              setIsSignUp(true);    // show signup form
+            }}
+            style={{ cursor: "pointer", color: "yellowgreen", marginBottom: "10px" }}
+          >
+            ← Back to Sign Up
+          </p>
+        )}
 
         <form onSubmit={handleSubmit}>
           {isSignUp && !adminLogin && (
