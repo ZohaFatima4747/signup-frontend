@@ -77,7 +77,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="admin-container">
+    <div  style={{padding: "30px"}}  className="admin-container">
       <div className="header">
         <h1>Admin Dashboard</h1>
         <button className="logout-btn" onClick={handleLogout}>
