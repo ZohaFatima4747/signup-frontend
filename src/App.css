@@ -1,0 +1,227 @@
+/* Full-screen Login Page */
+.login-container {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #0d0d0d;
+  transition: 0.5s ease-in-out;
+}
+
+/* Sliding Effect */
+.sign-up-mode .login-box {
+  transform: translateY(30px); 
+  opacity: 1;
+}
+
+/* Login Box */
+.login-box {
+  background: #1a1a1a;
+  padding: 40px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+/* Title */
+h2 {
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+/* Input Groups */
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.input-group label {
+  color: #ccc;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* Login Button */
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #ff4500;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background: #e63900;
+}
+
+/* Forgot Password */
+.forgot-password {
+  color: #bbb;
+  font-size: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  color: white;
+}
+
+/* Toggle Text */
+.toggle-text {
+  color: #ff4500;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.toggle-text:hover {
+  color: white;
+}
+/* ✅ Forgot Password Modal - Sliding Animation */
+.reset-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9); 
+  background: #1a1a1a;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* ✅ Jab showReset true ho to modal dikhayega */
+.show-reset-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1); 
+}
+
+/* ✅ Input aur Button ke darmiyan gap */
+.reset-modal input {
+  width: 90%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background: #2a2a2a;
+  color: white;
+  margin-bottom: 15px;
+}
+.response-message {
+  color: #4caf50; /* Green color for success */
+  margin-bottom: 15px;
+}
+
+.reset-modal button {
+  width: 95%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background: #ff4500;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.reset-modal button:hover {
+  background: #e63900;
+}
+
+/* ✅ Close Button Style */
+.close-btn {
+  color: red;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.close-btn:hover {
+  color: white;
+}
+
+/* Tablets and below */
+@media (max-width: 768px) {
+  .login-container {
+    margin-top: 40px;
+    padding: 20px;
+    height: auto;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .login-box {
+    width: 90%;
+    padding: 30px;
+    margin-top: 50px;
+  }
+
+  .reset-modal {
+    width: 90%;
+    padding: 25px;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 480px) {
+  .login-container {
+    margin-top: 40px;
+    padding: 15px;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .login-box {
+    width: 100%;
+    padding: 25px;
+    margin-top: 40px;
+  }
+
+  .input-group input,
+  .login-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .reset-modal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .reset-modal input,
+  .reset-modal button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .close-btn {
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+}
